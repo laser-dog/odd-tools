@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web Image Optimizer</title>
+<style>
+  @font-face{font-family:Aileron;src:url("https://cdn.jsdelivr.net/gh/laser-dog/odd-enterprises@main/fonts/Aileron-Regular.woff") format("woff");font-weight:400;font-display:swap}
+  @font-face{font-family:Aileron;src:url("https://cdn.jsdelivr.net/gh/laser-dog/odd-enterprises@main/fonts/Aileron-SemiBold.woff") format("woff");font-weight:600;font-display:swap}
+  @font-face{font-family:Redaction;src:url("https://cdn.jsdelivr.net/gh/laser-dog/odd-enterprises@main/fonts/Redaction-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:Redaction;src:url("https://cdn.jsdelivr.net/gh/laser-dog/odd-enterprises@main/fonts/Redaction-Italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
+  :root { --bg:#f5f4f0; --card:#fff; --ink:#221d1c; --mute:#7a736f; --line:#221d1c26; --accent:#53ff45; --on-accent:#221d1c; --ok:#1f8a2b; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#221d1c; --card:#2b2524; --ink:#fff; --mute:#9b928d; --line:#ffffff2e; --ok:#53ff45; }
+  }
+  * { box-sizing:border-box; border-radius:0; }
+  body { margin:0; font:15px/1.5 Aileron,system-ui,sans-serif; background:var(--bg); color:var(--ink); }
+  main { max-width:980px; margin:0 auto; padding:32px 16px 64px; }
+  .back { color:var(--mute); font-size:11px; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; }
+  .back:hover { color:var(--ink); }
+  header { text-align:center; margin-bottom:32px; }
+  .logo { width:56px; height:auto; color:var(--ink); }
+  h1 { font:italic 400 44px/1.1 Redaction,Georgia,serif; letter-spacing:-.015em; margin:16px 0 8px; }
+  p.sub { color:var(--mute); margin:0 auto; max-width:560px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
+  #drop { border:1px dashed var(--ink); padding:40px 16px; text-align:center; cursor:pointer; background:var(--card); transition:.15s; font-family:Redaction,Georgia,serif; font-size:18px; }
+  #drop.over, #drop:hover { background:var(--accent); color:var(--on-accent); border-style:solid; }
+  #drop b { font-style:italic; font-weight:400; text-decoration:underline; text-underline-offset:4px; }
+  .opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:20px 0; background:var(--card); border:1px solid var(--line); padding:16px; }
+  label { display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--mute); margin-bottom:6px; }
+  select, input[type=number] { width:100%; padding:9px; border:1px solid var(--line); background:transparent; color:var(--ink); font:inherit; }
+  select option { color:#221d1c; }
+  input[type=range] { width:100%; accent-color:var(--accent); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:20px; }
+  .card { background:var(--card); border:1px solid var(--line); overflow:hidden; display:flex; flex-direction:column; }
+  .thumb { aspect-ratio:16/9; background:repeating-conic-gradient(#8881 0 25%, #0000 0 50%) 0 0/16px 16px; display:flex; }
+  .thumb img { width:100%; height:100%; object-fit:contain; }
+  .meta { padding:12px 14px; display:flex; flex-direction:column; gap:2px; flex:1; }
+  .meta h3 { margin:0; font:italic 400 20px Redaction,Georgia,serif; }
+  .meta small { color:var(--mute); }
+  .size { font-size:20px; font-weight:600; }
+  .good { color:var(--ok); font-size:13px; }
+  button, a.btn { font:600 11px Aileron,system-ui,sans-serif; letter-spacing:.1em; text-transform:uppercase; border:1px solid var(--ink); padding:12px 14px; background:var(--accent); color:var(--on-accent); cursor:pointer; text-decoration:none; text-align:center; display:block; }
+  button:hover, a.btn:hover { filter:brightness(.92); }
+  button:disabled { opacity:.5; cursor:wait; }
+  .card a.btn { margin:0 14px 14px; }
+  button.big { width:100%; padding:14px; margin-top:20px; }
+  #status { color:var(--mute); margin-top:12px; min-height:22px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
+  footer { text-align:center; margin-top:48px; color:var(--mute); font-size:10px; letter-spacing:.14em; text-transform:uppercase; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../">← All tools</a>
+  <header><svg class="logo" viewBox="0 0 70 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="ODD"><path fill="currentColor" d="M69.8495 16C69.8495 7.16332 54.2131 0 34.9247 0C34.6519 0 34.3798 0.00171187 34.1087 0.00427968C17.3199 0.180602 3.45815 5.78441 0.558624 13.136C0.192215 14.0656 0 15.0225 0 16C0 16.9775 0.186208 17.9079 0.54232 18.8246C3.42554 26.2413 17.4632 31.8887 34.4245 31.9983C34.5909 31.9991 34.7574 32 34.9247 32C54.1625 32 69.7662 24.8743 69.8486 16.0702C69.8486 16.0479 69.8495 16.0257 69.8495 16.0034C69.8495 16.0034 69.8495 16.0026 69.8495 16.0017C69.8495 16.0009 69.8495 16.0009 69.8495 16ZM52.3167 16.0026C52.1631 24.5808 47.9773 30.0356 33.363 30.0836C18.5487 30.1324 18.2141 24.1699 18.2776 16.0026C18.3462 7.21554 18.6019 2.10475 33.363 2.13299C48.1361 2.16124 52.4626 7.83609 52.3167 16.0026Z"/><path fill="currentColor" d="M28.4787 3.78516C25.3967 3.78516 20.6328 5.36295 20.6465 13.742V18.1782C20.9129 26.9824 25.8634 28.5594 28.4787 28.5594C39.1265 28.5594 49.8938 27.551 49.8938 16.0361C49.8938 4.52112 40.995 3.78516 28.4787 3.78516ZM27.4182 27.6313C27.2892 27.6313 27.1835 27.5314 27.1835 27.4085C27.1835 27.2855 27.291 27.277 27.4199 27.2787C34.2723 27.3581 38.9607 26.2789 38.9607 16.0361C38.9607 6.3337 36.2835 5.51065 27.5058 5.0923C27.3821 5.08632 27.1706 5.08461 27.1835 4.93093C27.1835 4.80799 27.2291 4.70297 27.358 4.70297C35.8537 4.71236 41.386 4.49465 41.386 16.0361C41.386 27.5775 35.9165 27.6168 27.4182 27.6313ZM27.6382 6.29015C27.523 6.17575 27.6133 5.95462 27.8341 5.97852C31.9441 6.41907 33.8667 7.75439 33.8624 16.0361C33.8624 16.0361 32.5878 26.0842 27.8341 26.3865C27.6992 26.395 27.6494 26.3395 27.6382 26.2405C27.6047 25.9502 28.1049 26.2405 28.1126 25.7325V6.62996C28.1126 6.21673 27.731 6.38321 27.6382 6.29015Z"/></svg>
+  <h1>Image Optimizer</h1>
+  <p class="sub">PNG @1x + @2x, then WebP under your size limit. Runs in your browser — nothing is uploaded.</p></header>
+
+  <div id="drop"><b>Click</b> or drop an image here<input id="file" type="file" accept="image/*" hidden></div>
+
+  <section id="work" hidden>
+    <div class="opts">
+      <div>
+        <label for="src">Your file is…</label>
+        <select id="src">
+          <option value="1">the @1x size (create @2x by upscaling)</option>
+          <option value="2" selected>the @2x size (create @1x by downscaling)</option>
+        </select>
+      </div>
+      <div>
+        <label for="max">Max WebP size (KB)</label>
+        <input id="max" type="number" value="1500" min="50" step="50">
+      </div>
+      <div>
+        <label for="q">Preferred WebP quality: <span id="qv">85</span></label>
+        <input id="q" type="range" min="50" max="100" value="85">
+        <small style="color:var(--mute)">Lowers automatically only if needed to fit the limit.</small>
+      </div>
+    </div>
+    <button class="big" id="go">Optimize</button>
+    <div id="status"></div>
+    <div class="grid" id="out"></div>
+    <button class="big" id="all" hidden>Download all</button>
+  </section>
+  <footer>ODD Enterprises · 2026</footer>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let bitmap, baseName = 'image', results = [];
+
+const fmtKB = b => b >= 1024*1024 ? (b/1048576).toFixed(2)+' MB' : Math.round(b/1024)+' KB';
+const toBlob = (c, type, q) => new Promise(r => c.toBlob(r, type, q));
+
+function render(w, h) {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const x = c.getContext('2d');
+  x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+  x.drawImage(bitmap, 0, 0, w, h);
+  return c;
+}
+
+// Highest quality (<= preferred) whose WebP fits under maxBytes; shrinks dimensions only as last resort.
+async function bestWebp(canvas, preferred, maxBytes) {
+  let blob = await toBlob(canvas, 'image/webp', preferred);
+  if (blob.size <= maxBytes) return { blob, q: preferred, scale: 1 };
+  let scale = 1, cur = canvas;
+  for (;;) {
+    let lo = 0.4, hi = preferred, best = null;
+    for (let i = 0; i < 7; i++) {
+      const mid = (lo + hi) / 2;
+      const b = await toBlob(cur, 'image/webp', mid);
+      if (b.size <= maxBytes) { best = { blob: b, q: mid, scale }; lo = mid; } else hi = mid;
+    }
+    if (best) return best;
+    scale *= 0.9;
+    cur = document.createElement('canvas');
+    cur.width = Math.round(canvas.width * scale); cur.height = Math.round(canvas.height * scale);
+    const x = cur.getContext('2d'); x.imageSmoothingQuality = 'high';
+    x.drawImage(canvas, 0, 0, cur.width, cur.height);
+  }
+}
+
+function card(title, blob, name, w, h, note, ref) {
+  const url = URL.createObjectURL(blob);
+  const saved = ref ? `<span class="good">${Math.round((1 - blob.size/ref)*100)}% lighter than the PNG</span>` : '';
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `<div class="thumb"><img src="${url}" alt=""></div>
+    <div class="meta"><h3>${title}</h3><span class="size">${fmtKB(blob.size)}</span>
+    <small>${w} × ${h}px${note ? ' · ' + note : ''}</small>${saved}</div>
+    <a class="btn" href="${url}" download="${name}">Download</a>`;
+  $('out').appendChild(el);
+  results.push({ url, name });
+}
+
+async function run() {
+  $('go').disabled = true; $('out').innerHTML = ''; results = []; $('all').hidden = true;
+  const srcScale = +$('src').value;
+  const w1 = Math.round(bitmap.width / srcScale), h1 = Math.round(bitmap.height / srcScale);
+  const sizes = [[1, w1, h1], [2, w1 * 2, h1 * 2]];
+  const maxBytes = +$('max').value * 1024, pref = +$('q').value / 100;
+
+  for (const [mult, w, h] of sizes) {
+    $('status').textContent = `Processing @${mult}x…`;
+    await new Promise(r => setTimeout(r));
+    const canvas = render(w, h);
+    const png = await toBlob(canvas, 'image/png');
+    card(`PNG @${mult}x`, png, `${baseName}@${mult}x.png`, w, h);
+    const { blob, q, scale } = await bestWebp(canvas, pref, maxBytes);
+    const note = `quality ${Math.round(q*100)}` + (scale < 1 ? ` · resized ${Math.round(scale*100)}%` : '');
+    card(`WebP @${mult}x`, blob, `${baseName}@${mult}x.webp`, Math.round(w*scale), Math.round(h*scale), note, png.size);
+  }
+  $('status').textContent = 'Done.';
+  $('go').disabled = false; $('all').hidden = false;
+}
+
+async function load(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  baseName = file.name.replace(/\.[^.]+$/, '');
+  bitmap = await createImageBitmap(file);
+  $('work').hidden = false;
+  $('drop').firstChild.textContent = `${file.name} (${bitmap.width}×${bitmap.height}) — drop another or `;
+  run();
+}
+
+$('drop').onclick = () => $('file').click();
+$('file').onchange = e => load(e.target.files[0]);
+$('drop').ondragover = e => { e.preventDefault(); $('drop').classList.add('over'); };
+$('drop').ondragleave = () => $('drop').classList.remove('over');
+$('drop').ondrop = e => { e.preventDefault(); $('drop').classList.remove('over'); load(e.dataTransfer.files[0]); };
+$('q').oninput = () => $('qv').textContent = $('q').value;
+$('go').onclick = run;
+$('all').onclick = async () => {
+  for (const r of results) {
+    const a = document.createElement('a'); a.href = r.url; a.download = r.name; a.click();
+    await new Promise(r => setTimeout(r, 250));
+  }
+};
+</script>
+</body>
+</html>
